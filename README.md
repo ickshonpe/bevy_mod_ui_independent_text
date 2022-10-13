@@ -26,6 +26,7 @@ fn main() {
         .run()
 }
 ```
+
 Don't forget a camera:
 
 ```rust
