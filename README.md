@@ -1,6 +1,4 @@
 # bevy_mod_ui_label
-
-# bevy_mod_ui_label
 [![crates.io](https://img.shields.io/crates/v/bevy_mod_ui_label)](https://crates.io/crates/bevy_mod_ui_label)
 [![MIT/Apache 2.0](https://img.shields.io/badge/license-MIT%2FApache-blue.svg)](https://github.com/ickshonpe/bevy_mod_ui_label)
 [![crates.io](https://img.shields.io/crates/d/bevy_mod_ui_label)](https://crates.io/crates/bevy_mod_ui_label)
@@ -12,7 +10,7 @@ Draw text anywhere with the Bevy UI.
 Add the dependency to `Cargo.toml`:
 
 ```toml
-bevy_mod_ui_label = "0.2.0"
+bevy_mod_ui_label = "0.2.1"
 ```
 
 Add the plugin to your app:
