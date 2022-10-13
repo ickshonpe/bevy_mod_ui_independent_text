@@ -1,0 +1,18 @@
+[package]
+name = "bevy_mod_ui_label"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+keywords = ["bevy", "text", "graphics", "ui", "games"]
+categories = ["game-development", "graphics", "gui"]
+repository = "https://github.com/ickshonpe/bevy_mod_ui_label"
+readme = "README.md"
+description = "Draw text anywhere with the Bevy UI"
+
+[dependencies.bevy]
+version = "0.8"
+default_features= false
+features = ["bevy_asset", "render"]
+
+[dev-dependencies]
+bevy = "0.8"
