@@ -7,7 +7,7 @@ fn setup(
 ) {
     commands.spawn_bundle(Camera2dBundle::default());
     commands.spawn_bundle(UiLabelBundle {
-        text: Text {
+        label: UiLabel(Text {
             sections: vec![TextSection {
                 value: "Hello, world".to_string(), 
                 style: TextStyle {
@@ -17,7 +17,7 @@ fn setup(
                 },
             }],
             alignment: TextAlignment::CENTER,
-        },
+        }),
         transform: Transform::from_translation(Vec3::new(400., 300., 100.)),
        ..Default::default()
     });  

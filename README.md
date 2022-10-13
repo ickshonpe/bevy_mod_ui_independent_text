@@ -12,7 +12,7 @@ Draw text anywhere with the Bevy UI.
 Add the dependency to `Cargo.toml`:
 
 ```toml
-bevy_mod_ui_label = "0.1.0"
+bevy_mod_ui_label = "0.2.0"
 ```
 
 Add the plugin to your app:
@@ -37,18 +37,21 @@ commands.spawn_bundle(Camera2dBundle::default());
 Then you can spawn a UiLabelBundle:
 
 ```rust
-commands.spawn_bundle(UiLabelBundle {
-    text: Text::from_section(
-        "Hello, world", 
-        TextStyle {
-            font: asset_loader.load("Topaz-8.ttf"),
-            font_size: 32.0,
-            color: Color::WHITE
-        }
-    ),
-    transform: Transform::from_translation(Vec3::new(400., 300., 100.)),
-    ..Default::default()
-});  
+ commands.spawn_bundle(UiLabelBundle {
+        label: UiLabel(Text {
+            sections: vec![TextSection {
+                value: "Hello, world".to_string(), 
+                style: TextStyle {
+                    font: asset_loader.load("Topaz-8.ttf"),
+                    font_size: 32.0,
+                    color: Color::WHITE
+                },
+            }],
+            alignment: TextAlignment::CENTER,
+        }),
+        transform: Transform::from_translation(Vec3::new(400., 300., 100.)),
+       ..Default::default()
+    });
 ```
 
 ## Full Example
