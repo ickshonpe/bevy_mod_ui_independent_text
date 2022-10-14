@@ -15,89 +15,52 @@ use bevy::window::ModifiesWindows;
 use bevy::window::WindowId;
 use bevy::window::WindowScaleFactorChanged;
 
-/// Text for abel
+/// Newtype wrapper for [`Text`]
+/// 
+/// Required so that the text isn't also extracted by `extract_text2d_sprite`
+/// and consequently drawn twice.
 #[derive(Clone, Component, Default, Debug, Deref, DerefMut, Reflect)]
 #[reflect(Component)]
 pub struct UiLabel(pub Text);
 
+impl From<Text> for UiLabel {
+    fn from(text: Text) -> Self {
+        Self(text)
+    }
+}
+
+impl UiLabel {
+    /// Constructs a [`UiLabel`] with a single section.
+    /// 
+    /// See [`Text`] for more details
+    pub fn from_section(value: impl Into<String>, style: TextStyle) -> Self {
+        Self(Text::from_section(value, style))
+    }    
+ 
+    /// Constructs a [`UiLabel`] from a list of sections.
+    /// 
+    /// See [`Text`] for more details
+    pub fn from_sections(sections: impl IntoIterator<Item = TextSection>) -> Self {
+        Self(Text::from_sections(sections))
+    }
+
+    /// Appends a new text section to the end of the label.
+    pub fn push_section(&mut self, value: impl Into<String>, style: TextStyle) {
+        self.sections.push(TextSection { value: value.into(), style });
+    }
+}
+
+/// Bundle of components needed to draw text to the Bevy UI 
+/// at any position and depth
 #[derive(Bundle, Default)]
 pub struct UiLabelBundle {
     pub label: UiLabel,
     pub text_2d_size: Text2dSize,
-    pub text_2d_bounds: Text2dBounds,
+    pub text_2d_bounds: Text2dBounds,   
     pub transform: Transform,
     pub global_transform: GlobalTransform,
     pub visibility: Visibility,
     pub computed_visibility: ComputedVisibility
-}
-
-pub fn extract_label_uinodes(
-    mut extracted_uinodes: ResMut<ExtractedUiNodes>,
-    texture_atlases: Extract<Res<Assets<TextureAtlas>>>,
-    text_pipeline: Extract<Res<DefaultTextPipeline>>,
-    windows: Extract<Res<Windows>>,
-    ui_label_query: Extract<
-        Query<(
-            Entity,
-            &GlobalTransform,
-            &UiLabel,
-            &Text2dSize,
-            &ComputedVisibility,
-        )>
-    >,
-) {
-    let scale_factor = windows.scale_factor(WindowId::primary()) as f32;
-    for (entity, global_transform, text, calculated_size, computed_visibility) in ui_label_query.iter() {
-        if !computed_visibility.is_visible() {
-            continue;
-        }
-        if let Some(text_layout) = text_pipeline.get_glyphs(&entity) {
-            let text_glyphs = &text_layout.glyphs;
-            let (width, height) = (calculated_size.size.x, calculated_size.size.y);
-            let alignment_offset = match text.alignment.vertical {
-                VerticalAlign::Top => Vec3::new(0.0, -height, 0.0),
-                VerticalAlign::Center => Vec3::new(0.0, -height * 0.5, 0.0),
-                VerticalAlign::Bottom => Vec3::ZERO,
-            } + match text.alignment.horizontal {
-                HorizontalAlign::Left => Vec3::ZERO,
-                HorizontalAlign::Center => Vec3::new(-width * 0.5, 0.0, 0.0),
-                HorizontalAlign::Right => Vec3::new(-width, 0.0, 0.0),
-            };
-
-            let mut color = Color::WHITE;
-            let mut current_section = usize::MAX;
-            for text_glyph in text_glyphs {
-                if text_glyph.section_index != current_section {
-                    color = text.sections[text_glyph.section_index]
-                        .style
-                        .color
-                        .as_rgba_linear();
-                    current_section = text_glyph.section_index;
-                }
-                let atlas = texture_atlases
-                    .get(&text_glyph.atlas_info.texture_atlas)
-                    .unwrap();
-                let texture = atlas.texture.clone_weak();
-                let index = text_glyph.atlas_info.glyph_index as usize;
-                let rect = atlas.textures[index];
-                let atlas_size = Some(atlas.size);
-                let extracted_transform = global_transform.compute_matrix()
-                    * Mat4::from_scale(Vec3::splat(scale_factor.recip()))
-                    * Mat4::from_translation(
-                        alignment_offset * scale_factor + text_glyph.position.extend(0.),
-                    );
-
-                extracted_uinodes.uinodes.push(ExtractedUiNode {
-                    transform: extracted_transform,
-                    color,
-                    rect,
-                    image: texture,
-                    atlas_size,
-                    clip: None,
-                });
-            }
-        }
-    }
 }
 
 #[allow(clippy::type_complexity, clippy::too_many_arguments)]
@@ -160,6 +123,74 @@ pub fn update_ui_label_layout(
     }
 }
 
+#[allow(clippy::type_complexity)]
+pub fn extract_label_sprite(
+    mut extracted_uinodes: ResMut<ExtractedUiNodes>,
+    texture_atlases: Extract<Res<Assets<TextureAtlas>>>,
+    text_pipeline: Extract<Res<DefaultTextPipeline>>,
+    windows: Extract<Res<Windows>>,
+    ui_label_query: Extract<
+        Query<(
+            Entity,
+            &GlobalTransform,
+            &UiLabel,
+            &Text2dSize,
+            &ComputedVisibility,
+        )>
+    >,
+) {
+    let scale_factor = windows.scale_factor(WindowId::primary()) as f32;
+    for (entity, global_transform, text, calculated_size, computed_visibility) in ui_label_query.iter() {
+        if !computed_visibility.is_visible() {
+            continue;
+        }
+        if let Some(text_layout) = text_pipeline.get_glyphs(&entity) {
+            let text_glyphs = &text_layout.glyphs;
+            let (width, height) = (calculated_size.size.x, calculated_size.size.y);
+            let alignment_offset = match text.alignment.vertical {
+                VerticalAlign::Top => Vec3::new(0.0, -height, 0.0),
+                VerticalAlign::Center => Vec3::new(0.0, -height * 0.5, 0.0),
+                VerticalAlign::Bottom => Vec3::ZERO,
+            } + match text.alignment.horizontal {
+                HorizontalAlign::Left => Vec3::ZERO,
+                HorizontalAlign::Center => Vec3::new(-width * 0.5, 0.0, 0.0),
+                HorizontalAlign::Right => Vec3::new(-width, 0.0, 0.0),
+            };
+            let mut color = Color::WHITE;
+            let mut current_section = usize::MAX;
+            for text_glyph in text_glyphs {
+                if text_glyph.section_index != current_section {
+                    color = text.sections[text_glyph.section_index]
+                        .style
+                        .color
+                        .as_rgba_linear();
+                    current_section = text_glyph.section_index;
+                }
+                let atlas = texture_atlases
+                    .get(&text_glyph.atlas_info.texture_atlas)
+                    .unwrap();
+                let texture = atlas.texture.clone_weak();
+                let index = text_glyph.atlas_info.glyph_index as usize;
+                let rect = atlas.textures[index];
+                let atlas_size = Some(atlas.size);
+                let extracted_transform = global_transform.compute_matrix()
+                    * Mat4::from_scale(Vec3::splat(scale_factor.recip()))
+                    * Mat4::from_translation(
+                        alignment_offset * scale_factor + text_glyph.position.extend(0.),
+                    );
+                extracted_uinodes.uinodes.push(ExtractedUiNode {
+                    transform: extracted_transform,
+                    color,
+                    rect,
+                    image: texture,
+                    atlas_size,
+                    clip: None,
+                });
+            }
+        }
+    }
+}
+
 pub struct UiLabelPlugin;
 
 impl Plugin for UiLabelPlugin {
@@ -170,15 +201,13 @@ impl Plugin for UiLabelPlugin {
             CoreStage::PostUpdate,
             update_ui_label_layout.after(ModifiesWindows),
         );
-
         let render_app = match app.get_sub_app_mut(RenderApp) {
             Ok(render_app) => render_app,
             Err(_) => return,
         };
-
         render_app.add_system_to_stage(
             RenderStage::Extract,
-            extract_label_uinodes.after(RenderUiSystem::ExtractNode),
+            extract_label_sprite.after(RenderUiSystem::ExtractNode),
         );
     }
 }

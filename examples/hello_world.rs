@@ -18,7 +18,11 @@ fn setup(
             }],
             alignment: TextAlignment::CENTER,
         }),
-        transform: Transform::from_translation(Vec3::new(400., 300., 100.)),
+        transform: Transform {
+            translation: Vec3::new(400., 300., 100.),
+            rotation: Quat::from_rotation_z(8f32.recip() * std::f32::consts::PI),
+            ..Default::default()
+        },
        ..Default::default()
     });  
 }

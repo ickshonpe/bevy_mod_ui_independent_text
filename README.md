@@ -3,14 +3,16 @@
 [![MIT/Apache 2.0](https://img.shields.io/badge/license-MIT%2FApache-blue.svg)](https://github.com/ickshonpe/bevy_mod_ui_label)
 [![crates.io](https://img.shields.io/crates/d/bevy_mod_ui_label)](https://crates.io/crates/bevy_mod_ui_label)
 
-Draw text anywhere with the Bevy UI.
+Draw text anywhere at any depth and orientation with the Bevy UI.
+
+![image](example.png)
 
 ## Usage
 
 Add the dependency to `Cargo.toml`:
 
 ```toml
-bevy_mod_ui_label = "0.2.1"
+bevy_mod_ui_label = "0.2.2"
 ```
 
 Add the plugin to your app:
@@ -33,7 +35,7 @@ Don't forget a camera:
 commands.spawn_bundle(Camera2dBundle::default());
 ```
 
-Then you can spawn a UiLabelBundle:
+Then you can draw text by spawning a UiLabelBundle:
 
 ```rust
  commands.spawn_bundle(UiLabelBundle {
@@ -48,13 +50,18 @@ Then you can spawn a UiLabelBundle:
             }],
             alignment: TextAlignment::CENTER,
         }),
-        transform: Transform::from_translation(Vec3::new(400., 300., 100.)),
+        transform: Transform {
+            translation: Vec3::new(400., 300., 100.),
+            rotation: Quat::from_rotation_z(8f32.recip() * std::f32::consts::PI),
+            ..Default::default()
+        },
        ..Default::default()
     });
 ```
 
-## Full Example
+## Examples
 
 ```
 cargo --run --example hello_world
+cargo --run --example depth
 ```
