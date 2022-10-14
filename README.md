@@ -5,7 +5,7 @@
 
 Draw text anywhere at any depth and orientation with the Bevy UI.
 
-![image](example.png)
+![image](text_depth_example.png)
 
 ## Usage
 
