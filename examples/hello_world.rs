@@ -20,7 +20,7 @@ fn setup(
         }),
         transform: Transform {
             translation: Vec3::new(400., 300., 100.),
-            rotation: Quat::from_rotation_z(8f32.recip() * std::f32::consts::PI),
+            rotation: Quat::from_rotation_z(std::f32::consts::PI / 8.),
             ..Default::default()
         },
        ..Default::default()

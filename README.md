@@ -12,7 +12,7 @@ Draw text anywhere at any depth and orientation with the Bevy UI.
 Add the dependency to `Cargo.toml`:
 
 ```toml
-bevy_mod_ui_label = "0.2.4"
+bevy_mod_ui_label = "0.2.5"
 ```
 
 Add the plugin to your Bevy app:
@@ -52,12 +52,14 @@ Then you can draw text by spawning a UiLabelBundle:
         }),
         transform: Transform {
             translation: Vec3::new(400., 300., 100.),
-            rotation: Quat::from_rotation_z(8f32.recip() * std::f32::consts::PI),
+            rotation: Quat::from_rotation_z(std::f32::consts::PI / 8.),
             ..Default::default()
         },
        ..Default::default()
     });
 ```
+
+![image](hello_world.png)
 
 ## Examples
 

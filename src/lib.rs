@@ -156,6 +156,7 @@ pub fn extract_label_sprite(
                 HorizontalAlign::Center => Vec3::new(-width * 0.5, 0.0, 0.0),
                 HorizontalAlign::Right => Vec3::new(-width, 0.0, 0.0),
             };
+            
             let mut color = Color::WHITE;
             let mut current_section = usize::MAX;
             for text_glyph in text_glyphs {
