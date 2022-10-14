@@ -32,7 +32,7 @@ fn setup(
     });
     let labels = [
         ("This label is above the UI", 400., 1.),
-        ("This Label is between nodes", 300., 0.001),
+        ("This label is in-between", 300., 0.001),
         ("This label is hidden behind", 200., 0.),
     ];
     for (message, y, z) in labels.into_iter() {
