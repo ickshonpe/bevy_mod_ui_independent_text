@@ -21,7 +21,6 @@ fn setup(
         }),        
         transform: Transform {
             translation: Vec3::new(400., 300., 100.),
-            rotation: Quat::from_rotation_z(std::f32::consts::PI),
             ..Default::default()
         },
         text_2d_bounds: Text2dBounds { size: Vec2::new(120., 300.) },
