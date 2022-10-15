@@ -12,7 +12,7 @@ Draw text anywhere at any depth and orientation with the Bevy UI.
 Add the dependency to `Cargo.toml`:
 
 ```toml
-bevy_mod_ui_label = "0.2.5"
+bevy_mod_ui_label = "0.2.6"
 ```
 
 Add the plugin to your Bevy app:
