@@ -7,7 +7,7 @@ keywords = ["bevy", "text", "graphics", "ui", "games"]
 categories = ["game-development", "graphics", "gui"]
 repository = "https://github.com/ickshonpe/bevy_mod_ui_independent_text"
 readme = "README.md"
-description = "Draw text anywhere at any depth with the Bevy UI"
+description = "Bevy UI text with a transform independent of the UI's layout." 
 
 [dependencies.bevy]
 version = "0.8"

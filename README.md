@@ -3,7 +3,7 @@
 [![MIT/Apache 2.0](https://img.shields.io/badge/license-MIT%2FApache-blue.svg)](https://github.com/ickshonpe/bevy_mod_ui_independent_text)
 [![crates.io](https://img.shields.io/crates/d/bevy_mod_ui_independent_text)](https://crates.io/crates/bevy_mod_ui_independent_text)
 
-Plugin that draws text with the Bevy Ui but independent of the layout system. 
+Bevy UI text with a transform independent of the UI's layout. 
 * Draw text at any Z depth, above or below Bevy UI elements
 * Text can be rotated and scaled
 * Customisable alignment and bounds
