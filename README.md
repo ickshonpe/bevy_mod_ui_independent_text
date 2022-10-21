@@ -3,7 +3,11 @@
 [![MIT/Apache 2.0](https://img.shields.io/badge/license-MIT%2FApache-blue.svg)](https://github.com/ickshonpe/bevy_mod_ui_independent_text)
 [![crates.io](https://img.shields.io/crates/d/bevy_mod_ui_independent_text)](https://crates.io/crates/bevy_mod_ui_independent_text)
 
-Draw text anywhere at any depth and orientation with the Bevy UI.
+Plugin that draws text with the Bevy Ui but independent of the layout system. 
+* Draw text at any Z depth, above or below Bevy UI elements
+* Text can be rotated and scaled
+* Customisable alignment and bounds
+* Supports Bevy 0.8
 
 ![image](text_depth_example.png)
 
@@ -66,4 +70,5 @@ Then you can draw text by spawning a IndependentTextBundle:
 ```
 cargo --run --example hello_world
 cargo --run --example depth
+cargo --run --example bounded
 ```
