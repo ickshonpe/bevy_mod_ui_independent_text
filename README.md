@@ -1,7 +1,7 @@
-# bevy_mod_ui_label
-[![crates.io](https://img.shields.io/crates/v/bevy_mod_ui_label)](https://crates.io/crates/bevy_mod_ui_label)
-[![MIT/Apache 2.0](https://img.shields.io/badge/license-MIT%2FApache-blue.svg)](https://github.com/ickshonpe/bevy_mod_ui_label)
-[![crates.io](https://img.shields.io/crates/d/bevy_mod_ui_label)](https://crates.io/crates/bevy_mod_ui_label)
+# bevy_mod_ui_independent_text
+[![crates.io](https://img.shields.io/crates/v/bevy_mod_ui_independent_text)](https://crates.io/crates/bevy_mod_ui_independent_text)
+[![MIT/Apache 2.0](https://img.shields.io/badge/license-MIT%2FApache-blue.svg)](https://github.com/ickshonpe/bevy_mod_ui_independent_text)
+[![crates.io](https://img.shields.io/crates/d/bevy_mod_ui_independent_text)](https://crates.io/crates/bevy_mod_ui_independent_text)
 
 Draw text anywhere at any depth and orientation with the Bevy UI.
 
@@ -12,18 +12,18 @@ Draw text anywhere at any depth and orientation with the Bevy UI.
 Add the dependency to `Cargo.toml`:
 
 ```toml
-bevy_mod_ui_label = "0.2.6"
+bevy_mod_ui_independent_text = "0.3.0"
 ```
 
 Add the plugin to your Bevy app:
 
 ```rust
-use bevy_mod_ui_label::*;
+use bevy_mod_ui_independent_text::*;
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
-        .add_plugin(UiLabelPlugin)
+        .add_plugin(IndependentTextPlugin)
         // ..rest of app
         .run()
 }
@@ -35,11 +35,11 @@ Don't forget a camera:
 commands.spawn_bundle(Camera2dBundle::default());
 ```
 
-Then you can draw text by spawning a UiLabelBundle:
+Then you can draw text by spawning a IndependentTextBundle:
 
 ```rust
- commands.spawn_bundle(UiLabelBundle {
-        label: UiLabel(Text {
+ commands.spawn_bundle(IndependentTextBundle {
+        text: UiText(Text {
             sections: vec![TextSection {
                 value: "Hello, world".to_string(), 
                 style: TextStyle {

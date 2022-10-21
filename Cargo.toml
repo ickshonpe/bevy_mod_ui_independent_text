@@ -1,11 +1,11 @@
 [package]
-name = "bevy_mod_ui_label"
-version = "0.2.6"
+name = "bevy_mod_ui_independent_text"
+version = "0.3.0"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 keywords = ["bevy", "text", "graphics", "ui", "games"]
 categories = ["game-development", "graphics", "gui"]
-repository = "https://github.com/ickshonpe/bevy_mod_ui_label"
+repository = "https://github.com/ickshonpe/bevy_mod_ui_independent_text"
 readme = "README.md"
 description = "Draw text anywhere at any depth with the Bevy UI"
 

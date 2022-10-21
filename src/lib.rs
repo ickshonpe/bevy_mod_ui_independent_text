@@ -21,30 +21,30 @@ use bevy::window::WindowScaleFactorChanged;
 /// and consequently drawn twice.
 #[derive(Clone, Component, Default, Debug, Deref, DerefMut, Reflect)]
 #[reflect(Component)]
-pub struct UiLabel(pub Text);
+pub struct UiText(pub Text);
 
-impl From<Text> for UiLabel {
+impl From<Text> for UiText {
     fn from(text: Text) -> Self {
         Self(text)
     }
 }
 
-impl UiLabel {
-    /// Constructs a [`UiLabel`] with a single section.
+impl UiText {
+    /// Constructs a [`UiText`] with a single section.
     /// 
     /// See [`Text`] for more details
     pub fn from_section(value: impl Into<String>, style: TextStyle) -> Self {
         Self(Text::from_section(value, style))
     }    
  
-    /// Constructs a [`UiLabel`] from a list of sections.
+    /// Constructs a [`UiText`] from a list of sections.
     /// 
     /// See [`Text`] for more details
     pub fn from_sections(sections: impl IntoIterator<Item = TextSection>) -> Self {
         Self(Text::from_sections(sections))
     }
 
-    /// Appends a new text section to the end of the label.
+    /// Appends a new text section to the end of the text.
     pub fn push_section(&mut self, value: impl Into<String>, style: TextStyle) {
         self.sections.push(TextSection { value: value.into(), style });
     }
@@ -53,8 +53,8 @@ impl UiLabel {
 /// Bundle of components needed to draw text to the Bevy UI 
 /// at any position and depth
 #[derive(Bundle, Default)]
-pub struct UiLabelBundle {
-    pub label: UiLabel,
+pub struct IndependentTextBundle {
+    pub text: UiText,
     pub text_2d_size: Text2dSize,
     pub text_2d_bounds: Text2dBounds,   
     pub transform: Transform,
@@ -64,7 +64,7 @@ pub struct UiLabelBundle {
 }
 
 #[allow(clippy::type_complexity, clippy::too_many_arguments)]
-pub fn update_ui_label_layout(
+pub fn update_ui_independent_text_layout(
     mut queue: Local<HashSet<Entity>>,
     mut textures: ResMut<Assets<Image>>,
     fonts: Res<Assets<Font>>,
@@ -75,15 +75,15 @@ pub fn update_ui_label_layout(
     mut text_pipeline: ResMut<DefaultTextPipeline>,
     mut text_query: Query<(
         Entity,
-        Changed<UiLabel>,
-        &UiLabel,
+        Changed<UiText>,
+        &UiText,
         Option<&Text2dBounds>,
         &mut Text2dSize,
     )>,
 ) {
     let factor_changed = scale_factor_changed.iter().last().is_some();
     let scale_factor = windows.scale_factor(WindowId::primary());
-    for (entity, text_changed, UiLabel(text), maybe_bounds, mut calculated_size) in &mut text_query {
+    for (entity, text_changed, UiText(text), maybe_bounds, mut calculated_size) in &mut text_query {
         if factor_changed || text_changed || queue.remove(&entity) {
             let text_bounds = match maybe_bounds {
                 Some(bounds) => Vec2::new(
@@ -124,23 +124,23 @@ pub fn update_ui_label_layout(
 }
 
 #[allow(clippy::type_complexity)]
-pub fn extract_label_sprite(
+pub fn extract_text_sprite(
     mut extracted_uinodes: ResMut<ExtractedUiNodes>,
     texture_atlases: Extract<Res<Assets<TextureAtlas>>>,
     text_pipeline: Extract<Res<DefaultTextPipeline>>,
     windows: Extract<Res<Windows>>,
-    ui_label_query: Extract<
+    text_query: Extract<
         Query<(
             Entity,
             &GlobalTransform,
-            &UiLabel,
+            &UiText,
             &Text2dSize,
             &ComputedVisibility,
         )>
     >,
 ) {
     let scale_factor = windows.scale_factor(WindowId::primary()) as f32;
-    for (entity, global_transform, text, calculated_size, computed_visibility) in ui_label_query.iter() {
+    for (entity, global_transform, text, calculated_size, computed_visibility) in text_query.iter() {
         if !computed_visibility.is_visible() {
             continue;
         }
@@ -192,15 +192,15 @@ pub fn extract_label_sprite(
     }
 }
 
-pub struct UiLabelPlugin;
+pub struct IndependentTextPlugin;
 
-impl Plugin for UiLabelPlugin {
+impl Plugin for IndependentTextPlugin {
     fn build(&self, app: &mut App) {
         app
-        .register_type::<UiLabel>()
+        .register_type::<UiText>()
         .add_system_to_stage(
             CoreStage::PostUpdate,
-            update_ui_label_layout.after(ModifiesWindows),
+            update_ui_independent_text_layout.after(ModifiesWindows),
         );
         let render_app = match app.get_sub_app_mut(RenderApp) {
             Ok(render_app) => render_app,
@@ -208,7 +208,7 @@ impl Plugin for UiLabelPlugin {
         };
         render_app.add_system_to_stage(
             RenderStage::Extract,
-            extract_label_sprite.after(RenderUiSystem::ExtractNode),
-        );
+            extract_text_sprite.after(RenderUiSystem::ExtractNode),
+        ); 
     }
 }

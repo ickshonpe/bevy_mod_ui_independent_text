@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use bevy_mod_ui_label::*;
+use bevy_mod_ui_independent_text::*;
 
 fn setup(
     mut commands: Commands,
@@ -36,8 +36,8 @@ fn setup(
         ("This label is hidden behind", 200., 0.),
     ];
     for (message, y, z) in labels.into_iter() {
-        commands.spawn_bundle(UiLabelBundle {
-            label: UiLabel(Text {
+        commands.spawn_bundle(IndependentTextBundle {
+            text: UiText(Text {
                 sections: vec![TextSection {
                     value: message.to_string(), 
                     style: TextStyle {
@@ -62,7 +62,7 @@ fn main() {
             ..Default::default()
         })      
         .add_plugins(DefaultPlugins)
-        .add_plugin(UiLabelPlugin)
+        .add_plugin(IndependentTextPlugin)
         .add_startup_system(setup)
         .run();
 }
